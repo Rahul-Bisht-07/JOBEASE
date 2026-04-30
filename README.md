@@ -67,6 +67,10 @@ SMTP_PORT=465
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 SMTP_FROM="JobEase Support <your-email@gmail.com>"
+
+# Integrations
+NAUKRI_ENCRYPTION_KEY=your-32-character-secret-key-here
+GEMINI_API_KEY=your-google-gemini-api-key
 ```
 
 Start the backend server (starts on `http://localhost:3000`):
