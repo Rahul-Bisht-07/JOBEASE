@@ -1,29 +1,52 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import {
+    TenorSans_400Regular,
+    useFonts,
+} from '@expo-google-fonts/tenor-sans';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
+import { Text as RNText } from 'react-native';
+import { ThemeProvider } from '../lib/ThemeContext';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const [fontsLoaded, fontError] = useFonts({
+    TenorSans_400Regular,
   });
+  const [textConfigured, setTextConfigured] = useState(false);
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    if (fontsLoaded && !textConfigured) {
+      const textComponent = RNText as typeof RNText & { defaultProps?: any };
+      textComponent.defaultProps = textComponent.defaultProps || {};
+      const existingStyle = textComponent.defaultProps.style;
+      const mergedStyle = Array.isArray(existingStyle)
+        ? [...existingStyle, { fontFamily: 'TenorSans_400Regular' }]
+        : [existingStyle, { fontFamily: 'TenorSans_400Regular' }].filter(Boolean);
+      textComponent.defaultProps.style =
+        mergedStyle.length > 0 ? mergedStyle : { fontFamily: 'TenorSans_400Regular' };
+      setTextConfigured(true);
+    }
+  }, [fontsLoaded, textConfigured]);
+
+  if (!fontsLoaded && !fontError) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
     </ThemeProvider>
   );
 }

@@ -1,0 +1,383 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+% Page setup
+\geometry{a4paper, left=30mm, right=30mm, top=25mm, bottom=25mm}
+\onehalfspacing
+
+% Header / footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{JOBEASE Progress Report}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\thepage}
+
+% Chapter/section formatting
+\titleformat{\chapter}[hang]{\normalfont\Huge\bfseries}{\thechapter}{2pc}{}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+% Simple table styling
+\renewcommand{\arraystretch}{1.25}
+
+% Document metadata
+\title{
+  \Huge{\textbf{JOBEASE: Intelligent Career Matching and Application Automation}}\\[6pt]
+  \Large{Progress Report (15 Pages)}\\[18pt]
+  \large{Prepared by: \textbf{[Your Name]}}\\[6pt]
+  \large{Under the Guidance of: \textbf{[Guide Name]}}\\[18pt]
+  \large{Department of \textbf{[Your Department]}}\\
+  \large{\textbf{[Institution Name]}}\\[10pt]
+  \large{Academic Year: \textbf{[Year]}}
+}
+\author{}
+\date{06 February 2026}
+
+\begin{document}
+
+% ------------------------
+% Title page
+% ------------------------
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% ------------------------
+% Table of contents
+% ------------------------
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+% ============================================================
+\chapter{Project Title}
+\section*{JOBEASE: Intelligent Career Matching and Application Automation}
+
+\noindent
+\textbf{JOBEASE} is a job-search support platform that helps candidates discover jobs, manage their profile, and reduce repeated effort in applying. The project includes:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item A \textbf{mobile app} (Expo + React Native) for users to sign up, log in, search jobs, and manage their profile.
+  \item A \textbf{backend API} (Node.js + Express + MongoDB) for authentication, profile storage, resume upload, and job data.
+  \item A \textbf{job collection system} that fetches job listings automatically (scheduled scraping) and also fetches fresh results on demand (live search).
+\end{itemize}
+
+\noindent
+The long-term aim is to make job searching and applying easier, faster, and more organized for users.
+
+% ============================================================
+\chapter{Introduction}
+\section*{Background and Problem Domain (Layman Language)}
+
+\noindent
+Finding a job today is not just about searching. A candidate often has to:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item look at many websites to find suitable jobs,
+  \item repeatedly type the same personal details,
+  \item keep track of which jobs they applied to and when,
+  \item and sometimes reset passwords or create accounts for different platforms.
+\end{itemize}
+
+\noindent
+This process becomes stressful and time-consuming, especially for students and fresh graduates. Many people miss deadlines or lose track of applications because there is no single place to manage everything.
+
+\medskip
+\noindent
+\textbf{Problem domain:} JOBEASE falls under career services / recruitment support. It focuses on improving the \textit{candidate-side experience} by providing:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item \textbf{Job discovery}: show and search jobs in one place,
+  \item \textbf{Profile and resume management}: store details once and reuse,
+  \item \textbf{Security and account management}: sign up, login, password reset,
+  \item \textbf{Tracking}: help users stay organized across application stages.
+\end{itemize}
+
+\section*{Why This Project is Needed}
+\noindent
+Many existing platforms focus only on listing jobs. They do not help enough with organization, repeated form filling, or keeping an application timeline. JOBEASE is designed to:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item reduce repeated work for users,
+  \item provide a clean and simple interface to search jobs,
+  \item store user preferences (like preferred role type, location, salary range),
+  \item and later expand into smarter matching and automation.
+\end{itemize}
+
+\section*{Current Project Scope (What We Built So Far)}
+\noindent
+In this stage, the focus is on building a strong foundation (MVP). The system currently includes:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item Mobile app screens for authentication, job discovery, tracker UI, and profile.
+  \item Backend APIs for authentication, password reset, user profile update, resume upload.
+  \item Backend job scraping (scheduled + live search) and job storage in MongoDB.
+\end{itemize}
+
+% ============================================================
+\chapter{Objectives}
+\section*{Main Objectives / Modules}
+
+\noindent
+The main objectives of JOBEASE are listed below.
+
+\begin{itemize}[leftmargin=*, itemsep=6pt]
+  \item \textbf{User Authentication Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Allow new users to sign up and existing users to log in.
+    \item Keep user sessions secure using a token-based approach.
+  \end{itemize}
+
+  \item \textbf{Password Reset Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Allow users to reset passwords using a secure email link.
+    \item Also provide an OTP-based reset option for convenience.
+  \end{itemize}
+
+  \item \textbf{Profile and Preferences Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Store and edit user profile details (phone, location, bio).
+    \item Store preferences (job types, preferred locations, salary range).
+  \end{itemize}
+
+  \item \textbf{Resume Upload Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Allow users to upload a PDF/DOC/DOCX resume from the mobile app.
+    \item Store resume metadata for later use (name, upload time).
+  \end{itemize}
+
+  \item \textbf{Job Discovery Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Show a list of jobs from the database.
+    \item Allow ``live search'' that fetches fresh results from the job source website.
+  \end{itemize}
+
+  \item \textbf{Job Details Module}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Fetch and display job description details when a user opens a job.
+  \end{itemize}
+
+  \item \textbf{Application Tracker Module (Initial UI)}
+  \begin{itemize}[leftmargin=*, itemsep=4pt]
+    \item Provide stages like Saved, Applied, Interviewing, Offers, Rejected.
+    \item (Next step) Save these stages to the backend so they persist.
+  \end{itemize}
+\end{itemize}
+
+% ============================================================
+\chapter{Methodology}
+\section*{Overall Development Approach (Simple Explanation)}
+
+\noindent
+The project is developed step-by-step using an iterative approach:
+\begin{enumerate}[leftmargin=*, itemsep=6pt]
+  \item Build the base system (auth, database, APIs).
+  \item Build the mobile screens and connect them to the APIs.
+  \item Add the jobs module (scraping + storage + display).
+  \item Improve the tracker and automation features in later phases.
+\end{enumerate}
+
+\noindent
+This approach is practical because we can test core features early and keep improving them.
+
+\section*{Technology Stack Used}
+\begin{itemize}[leftmargin=*, itemsep=6pt]
+  \item \textbf{Frontend}: Expo, React Native, Expo Router, AsyncStorage.
+  \item \textbf{Backend}: Node.js, Express, MongoDB, Mongoose.
+  \item \textbf{Security}: JWT (login token), bcrypt (password hashing), validation checks.
+  \item \textbf{Jobs}: Puppeteer (browser automation) + node-cron (scheduler).
+\end{itemize}
+
+\section*{Key Methods and Techniques}
+
+\subsection*{1) Secure Login using JWT (Token)}
+\noindent
+After login, the backend returns a token. The mobile app stores this token and sends it with future requests. This allows the server to confirm the user is logged in, without asking for a password repeatedly.
+
+\medskip
+\noindent
+\textbf{Mathematical foundation (very simple):} A token is protected by a signature. The idea is:
+\[
+\text{Signature} = \text{HMAC}( \text{SecretKey},\; \text{Data} )
+\]
+If the data is changed, the signature check fails. This helps prevent tampering.
+
+\subsection*{2) Password Safety using Hashing (bcrypt)}
+\noindent
+Passwords are never saved as plain text. Instead, we store a hashed version. During login, the system hashes the entered password and checks if it matches the saved hash.
+
+\medskip
+\noindent
+\textbf{Mathematical foundation (simple):} Hashing is a one-way function:
+\[
+\text{Hash} = f(\text{Password})
+\]
+It is easy to compute \(f(\cdot)\), but very hard to reverse it to get the original password.
+
+\subsection*{3) Password Reset using Secure Email Link}
+\noindent
+When a user clicks ``Forgot Password,'' the backend creates a random reset token and sends it in a link to the user. The database stores only the \textit{hashed} token and an expiry time. This means even if someone sees the database, they cannot directly use the reset token.
+
+\medskip
+\noindent
+\textbf{Mathematical foundation:} The system stores:
+\[
+\text{StoredToken} = \text{SHA-256}(\text{ResetToken})
+\]
+Later, when the user provides the reset token, the same hashing is applied and compared.
+
+\subsection*{4) OTP-Based Reset}
+\noindent
+OTP (One-Time Password) is a 6-digit code sent to the user's email. The system hashes the OTP before storing it. The OTP expires after a short time.
+
+\subsection*{5) Job Collection via Web Scraping}
+\noindent
+JOBEASE uses browser automation to open a job website, read the job listing cards, and extract fields like title, company, and job link. The extracted jobs are stored in MongoDB.
+
+\medskip
+\noindent
+\textbf{Conceptual foundation:} Scraping is a structured extraction process:
+\[
+\text{JobsData} = g(\text{WebPageDOM})
+\]
+where \(g(\cdot)\) is a set of rules/selectors that pick the needed information.
+
+\subsection*{6) Scheduled Updates using Cron}
+\noindent
+To keep jobs up-to-date, the backend runs the scraper automatically every day at midnight. This reduces manual work and keeps the database fresh.
+
+\section*{Data Flow (How Information Moves in the System)}
+\noindent
+The main user flow looks like this:
+\begin{enumerate}[leftmargin=*, itemsep=6pt]
+  \item User signs up / logs in from mobile app.
+  \item App stores token and uses it to call protected APIs.
+  \item User updates profile and uploads resume (optional).
+  \item App fetches job list from backend database.
+  \item User performs live search; backend scrapes fresh jobs and returns results.
+  \item (Next) User saves jobs into tracker stages and monitors progress.
+\end{enumerate}
+
+% ============================================================
+\chapter{Results and Modules}
+\section*{Implemented Results (What Works Now)}
+
+\noindent
+This section lists the main deliverables that are completed and can be demonstrated.
+
+\subsection*{Backend Results}
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item \textbf{Backend Server Running}: Base and health endpoints respond correctly.
+  \item \textbf{Signup and Login}: Users can create an account and log in.
+  \item \textbf{Get Current User}: Protected endpoint returns user details using token.
+  \item \textbf{Forgot Password}: Reset link is sent through email.
+  \item \textbf{OTP Reset}: OTP can be sent and used to reset password.
+  \item \textbf{Jobs APIs}: Stored jobs can be fetched; live search can scrape new jobs.
+  \item \textbf{Job Details}: Description and logo are scraped for a selected job link.
+  \item \textbf{Scheduler}: Jobs are refreshed daily using a scheduled task.
+  \item \textbf{Profile APIs}: Profile update and resume upload are supported.
+\end{itemize}
+
+\subsection*{Mobile App Results}
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item \textbf{Authentication Screens}: Welcome, login, signup, forgot-password, reset-password.
+  \item \textbf{Discover Screen}: Loads jobs from backend and supports live search.
+  \item \textbf{Profile Screen}: Shows user details, updates profile, uploads resume.
+  \item \textbf{Tracker Screen (UI)}: Shows stages and summary cards (persistence pending).
+\end{itemize}
+
+\section*{Module Breakdown (Detailed Explanation)}
+
+\subsection*{Module 1: Authentication}
+\noindent
+Authentication is implemented using email and password. After a successful login, the backend returns a token which is stored on the device. This token is used to access protected features like profile and resume upload.
+
+\subsection*{Module 2: Password Reset (Email Link + OTP)}
+\noindent
+Two reset options are implemented:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item \textbf{Email link reset}: user receives a secure link with a token.
+  \item \textbf{OTP reset}: user receives a 6-digit OTP to verify and reset.
+\end{itemize}
+Both are designed to be safe (hashed tokens/OTP, expiry, and non-revealing responses).
+
+\subsection*{Module 3: Profile and Preferences}
+\noindent
+Users can save basic details and job preferences. This helps later features like better job filtering and (future) matching.
+
+\subsection*{Module 4: Resume Upload}
+\noindent
+Users can upload a resume file from the app. The backend stores it and keeps metadata so the app can show that a resume exists and when it was updated.
+
+\subsection*{Module 5: Job Discovery}
+\noindent
+Jobs are collected in two ways:
+\begin{itemize}[leftmargin=*, itemsep=4pt]
+  \item \textbf{Scheduled scraping}: fills the database every day.
+  \item \textbf{Live search scraping}: quickly fetches jobs based on a keyword.
+\end{itemize}
+This improves freshness and supports real-time search behavior.
+
+\subsection*{Module 6: Tracker (Initial)}
+\noindent
+The tracker currently provides a UI structure. The next development step is to connect it to the backend so that saved/applied/interviewed jobs are stored permanently.
+
+% ============================================================
+\chapter{Project Status and Completion Percentage}
+\section*{Status Summary}
+\noindent
+The project has a working mobile app + backend foundation. Most core user account features are complete, and job discovery is functional. The tracker is partially complete (UI done, backend pending). Testing and deployment hardening are still pending.
+
+\section*{Module-wise Completion}
+
+\begin{longtable}{p{0.34\textwidth} p{0.44\textwidth} p{0.16\textwidth}}
+\toprule
+\textbf{Module} & \textbf{What is Done} & \textbf{Completion} \\
+\midrule
+\endhead
+Frontend base (Expo Router + theme) & Tab navigation, auth layouts, core screens created & 90\% \\
+Backend base (Express + DB) & Server, DB connection, middleware, error handling & 90\% \\
+Authentication & Signup, login, token logic, protected access & 95\% \\
+Password reset (email link) & Token generation, hashing, expiry, email sending & 90\% \\
+Password reset (OTP) & OTP send, hash store, verify, reset flow & 85\% \\
+User profile \& preferences & Fetch + update profile, preference fields & 80\% \\
+Resume upload & Mobile picker + multipart upload + metadata & 75\% \\
+Jobs database & Job schema, indexes, upsert logic & 85\% \\
+Scheduled scraping & Daily cron run for categories & 75\% \\
+Live job search & Search endpoint + app integration & 75\% \\
+Job details scraping & Fetch description/logo via details endpoint & 70\% \\
+Tracker (application stages) & UI scaffold exists; backend persistence pending & 25\% \\
+Testing & Minimal automated testing at the moment & 15\% \\
+Deployment readiness & Basic env setup; production hardening pending & 30\% \\
+\bottomrule
+\end{longtable}
+
+\section*{Overall Completion}
+\noindent
+\textbf{Estimated overall completion: 60\% to 65\%} (based on current MVP modules + planned remaining work).
+
+\section*{Work Remaining (Short Roadmap)}
+\begin{itemize}[leftmargin=*, itemsep=6pt]
+  \item Add backend support for Tracker (save/apply/interview stages in DB).
+  \item Improve job UI by adding proper job details view in the app and linking to scraped details.
+  \item Add testing for key flows (auth, reset, profile update, jobs fetch).
+  \item Improve deployment setup (production environment variables, CORS restriction, monitoring).
+  \item (Optional future) Add intelligent matching and automation based on user preferences and resume content.
+\end{itemize}
+
+% ============================================================
+\chapter{Conclusion}
+\noindent
+JOBEASE has reached a strong and usable stage for a working prototype: users can authenticate, recover accounts, manage profiles, upload resumes, and discover jobs through stored data and live search scraping. The remaining work focuses on completing persistent application tracking, improving reliability through testing, and preparing the system for deployment. With these next steps, JOBEASE can move from a functional MVP to a more complete job-search assistant platform.
+
+\end{document}
+

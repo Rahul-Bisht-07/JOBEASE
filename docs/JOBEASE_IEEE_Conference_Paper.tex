@@ -1,0 +1,179 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\graphicspath{{../ref images/}{ref images/}}
+
+\title{JobEase: Profile-Grounded Mobile Automation for Job Applications\\
+with Conversational AI Assistance}
+
+\author{
+\IEEEauthorblockN{Student Name 1, Student Name 2}
+\IEEEauthorblockA{
+Department of Computer Science and Engineering\\
+Graphic Era Hill University, Dehradun, India\\
+email1@domain.com, email2@domain.com}
+\and
+\IEEEauthorblockN{Guide Name}
+\IEEEauthorblockA{
+Department of Computer Science and Engineering\\
+Graphic Era Hill University, Dehradun, India\\
+guide@domain.com}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Campus recruitment workflows on job portals are repetitive, time-sensitive, and frequently interrupted by recruiter chatbot prompts. This paper presents \textit{JobEase}, a profile-grounded mobile automation system that reduces manual effort in job applications on the Naukri Campus portal. The proposed system integrates a React Native mobile client, a Node.js/Express backend, Puppeteer-based browser automation, MongoDB persistence, and Gemini API based conversational assistance. Users provide a one-time structured profile (skills, experience, CTC, notice period, location, CGPA, and related attributes), which drives both job matching and chatbot response generation. During application execution, the automation engine detects recruiter questions, builds profile-conditioned prompts, obtains concise human-like responses, and submits them iteratively until completion. Experimental evaluation across representative sessions demonstrates meaningful reduction in repetitive interaction effort while maintaining transparency through status-tracked application history. Results indicate that deterministic automation coupled with constrained AI response generation can improve application throughput and consistency in student placement contexts.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Job automation, Puppeteer, React Native, Node.js, Gemini API, Naukri Campus, chatbot handling, campus placements
+\end{IEEEkeywords}
+
+\section{Introduction}
+The transition from undergraduate study to industry employment is increasingly mediated by digital hiring platforms. While these portals improve access to opportunities, they also introduce repetitive tasks such as daily job scanning, eligibility checks, repeated form completion, and recruiter query handling. For students during placement season, this repetitive workload competes directly with interview preparation, academics, and project commitments.
+
+Traditional automation tools often fail in this domain for two reasons. First, they are not profile-grounded and therefore apply indiscriminately, reducing relevance quality. Second, they struggle with dynamic recruiter interactions, especially chatbot-based question loops that require contextual response generation. As a result, candidates either manually intervene frequently or abandon applications mid-flow.
+
+This work addresses the problem through \textit{JobEase}, a mobile-first system that automates job applications on Naukri Campus while preserving candidate context and transparency. The key contribution is a hybrid execution model: deterministic browser automation for portal actions and constrained language-model assistance for recruiter chat responses.
+
+\subsection{Contributions}
+This paper makes the following contributions:
+\begin{itemize}
+    \item A profile-driven automation architecture combining mobile UX, secure backend APIs, and Puppeteer workflow orchestration.
+    \item A recruiter chatbot handling pipeline that detects prompts, injects profile context, and generates concise answers using Gemini API.
+    \item A transparent tracking subsystem that records per-job status, chatbot turn counts, and execution outcomes.
+    \item An empirical session-level evaluation showing practical efficiency gains and robust behavior under dynamic portal conditions.
+\end{itemize}
+
+\section{Related Work}
+Web automation for repetitive workflows has been widely studied in robotic process automation (RPA) and script-driven browser control. Existing solutions are effective for deterministic forms but are less reliable for semi-structured, dynamic recruitment interfaces. Similarly, conversational AI has shown strong performance in text generation, yet unconstrained output can reduce factual alignment in professional contexts.
+
+In recruitment technology, most academic and industrial solutions focus on recommendation, resume ranking, or interview analytics. Fewer systems target candidate-side application execution with integrated chatbot completion. JobEase fills this gap by combining profile-conditioned response generation with action-level automation in a unified campus-placement workflow.
+
+\section{System Architecture}
+JobEase follows a modular architecture with six major components: mobile interface, authentication service, profile manager, automation engine, conversational AI service, and application tracker.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.95\columnwidth]{flowchart_1.png}
+\caption{High-level architecture of JobEase.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Mobile and API Layer}
+The mobile client provides onboarding, profile editing, discovery, execution triggers, and tracking. Backend services expose JWT-protected routes for authentication, profile CRUD, automation initiation, and history retrieval.
+
+\subsection{Automation Layer}
+Puppeteer executes stage-wise workflows: login, search, eligibility filtering, application action, chatbot handling, and status persistence. Retry-aware transitions prevent full-session failures due to isolated UI fluctuations.
+
+\subsection{Conversational AI Layer}
+When recruiter chatbot prompts appear, extracted questions are merged with user profile context. Gemini API generates concise responses under strict constraints on tone, length, and factual consistency.
+
+\section{Methodology}
+\subsection{Profile-Grounded Matching}
+Each job is evaluated against profile attributes (preferred roles, location preferences, expected CTC, notice period, and eligibility indicators). A weighted compatibility score is computed; only jobs above threshold are processed.
+
+\subsection{Chatbot Response Pipeline}
+For each detected recruiter prompt \(Q_t\), the system constructs context \(P_u\) from the candidate profile and generates response \(A_t\):
+\begin{equation}
+A_t = f_{\text{gemini}}(Q_t, P_u, C),
+\end{equation}
+where \(C\) denotes response constraints (brevity, tone, factual grounding). Responses violating constraints are filtered and replaced with safe fallback templates.
+
+\subsection{Failure Classification}
+Errors are categorized as: (i) recoverable (retry or refresh), (ii) skippable (job unavailable), and (iii) critical (auth/session failures). This classification improves continuity and post-run diagnosis.
+
+\section{Implementation}
+The prototype stack consists of React Native (mobile), Node.js + Express (API), MongoDB (storage), Puppeteer (automation), and Gemini free-tier API (conversation assistance). Data models include \texttt{User}, \texttt{Profile}, \texttt{ApplicationHistory}, and optional \texttt{JobCache}. The scheduler uses cron-style timed runs for periodic scraping and cache refresh.
+
+\subsection{Security and Validation}
+The system uses hashed credentials, JWT access control, schema-level validation, and environment-based secret management. Profile normalization is applied before persistence to maintain consistent downstream behavior.
+
+\section{Experimental Setup and Results}
+\subsection{Setup}
+Evaluation was conducted through repeated sessions with varied user profiles and search contexts. Metrics captured include jobs scanned, jobs matched, attempts, successes, chatbot interactions, and critical failures.
+
+\subsection{Session-level Performance}
+\begin{table}[!t]
+\centering
+\caption{Representative execution results}
+\label{tab:results}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{A} & \textbf{B} & \textbf{C} \\
+\midrule
+Jobs scanned & 68 & 74 & 81 \\
+Jobs matched & 31 & 36 & 39 \\
+Attempts & 27 & 33 & 34 \\
+Successful applications & 24 & 30 & 31 \\
+Chatbot interactions & 11 & 14 & 16 \\
+Avg. turns/interaction & 2.9 & 3.1 & 3.0 \\
+Critical failures & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Results indicate that profile-filtered automation can sustain useful application throughput while maintaining contextual response quality. Most failures were linked to portal rendering variability and were recoverable through retry logic.
+
+\subsection{Observations}
+Three practical findings emerged:
+\begin{itemize}
+    \item Profile completeness strongly improves both matching precision and chatbot response relevance.
+    \item Observability (status tracking, stage logs) is essential for user trust and maintenance.
+    \item Constrained prompt design is critical to avoid verbose or generic recruiter responses.
+\end{itemize}
+
+\section{Discussion}
+JobEase demonstrates that candidate-side recruitment automation can be both efficient and accountable if architecture enforces deterministic stage execution and profile-grounded AI constraints. Unlike pure script automation, the system remains robust under conversational interruptions. Unlike unconstrained AI chat agents, the generated content stays bounded by candidate data and professional tone.
+
+The system is particularly suitable for campus placement contexts where candidates must handle high application volume with limited time. By shifting effort from repetitive portal actions to one-time profile quality, JobEase supports better time allocation toward interview preparation.
+
+\section{Limitations and Future Work}
+The current system depends on portal UI stability, which may require selector maintenance over time. Free-tier API quotas can limit uninterrupted high-volume operation. Presently, the implementation targets Naukri Campus only.
+
+Future work includes multi-portal plugin architecture, semantic job description scoring, adaptive resume variant generation, stronger scheduler analytics, and policy-aware guardrails for large-scale execution.
+
+\section{Conclusion}
+This paper presented JobEase, a full-stack mobile automation framework for profile-grounded job applications with conversational AI assistance. The integration of Puppeteer workflow control, Gemini-powered chatbot completion, and transparent result tracking offers a practical solution for repetitive campus-placement workflows. Experimental results confirm that constrained AI plus deterministic automation can increase consistency and reduce manual burden while preserving visibility and control.
+
+\begin{thebibliography}{99}
+
+\bibitem{puppeteer}
+Chromium Team, ``Puppeteer Documentation,'' [Online]. Available: \url{https://pptr.dev/}
+
+\bibitem{node}
+Node.js Foundation, ``Node.js Documentation,'' [Online]. Available: \url{https://nodejs.org/en/docs}
+
+\bibitem{express}
+Express.js, ``Express Web Framework,'' [Online]. Available: \url{https://expressjs.com/}
+
+\bibitem{mongodb}
+MongoDB Inc., ``MongoDB Manual,'' [Online]. Available: \url{https://www.mongodb.com/docs/manual/}
+
+\bibitem{reactnative}
+Meta, ``React Native Documentation,'' [Online]. Available: \url{https://reactnative.dev/docs/getting-started}
+
+\bibitem{gemini}
+Google AI, ``Gemini API Documentation,'' [Online]. Available: \url{https://ai.google.dev/}
+
+\bibitem{sommerville}
+I. Sommerville, \textit{Software Engineering}, 10th ed. Pearson, 2016.
+
+\bibitem{fowler}
+M. Fowler, \textit{Patterns of Enterprise Application Architecture}. Addison-Wesley, 2002.
+
+\end{thebibliography}
+
+\end{document}
