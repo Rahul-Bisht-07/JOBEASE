@@ -219,6 +219,55 @@ Then:
 
 ---
 
+## Notes & Known Limitations
+
+### 👁️ Watching the Auto-Apply Browser in Real Time
+
+By default, Puppeteer runs the automation browser **in the background** (headless mode) so no window pops up. If you want to **watch the browser apply to jobs in real time**, open:
+
+```
+backend/naukri/applier.js  →  Line 64
+```
+
+Change:
+```js
+headless: true,
+```
+to:
+```js
+headless: false,
+```
+
+A real Chrome/Chromium browser window will now open when you trigger an auto-apply batch, and you can observe every step live.
+
+---
+
+### ⚠️ Gemini API Free Tier Quota
+
+The auto-apply feature uses the **Google Gemini API** (`gemini-2.5-flash`) to intelligently answer recruiter chatbot questions during applications. The **free tier has a limited request quota** (requests per minute and per day), which means:
+
+- If you are applying to many jobs in one batch, you may hit the quota limit.
+- When the quota is exceeded, Gemini calls will fail silently and the chatbot question will be skipped.
+- You will see an error like `[Gemini API Error] 429 Resource exhausted` in the backend logs.
+
+**Workarounds:**
+- Apply in smaller batches.
+- Upgrade to a paid Gemini API plan for higher limits.
+- Or wait for upcoming improvements listed below.
+
+---
+
+## 🚧 Upcoming Features
+
+This project is actively being developed. Planned improvements include:
+
+- **Gemini Response Caching** — Cache common chatbot question answers to reduce API calls and avoid quota limits.
+- **Locally Running LLM** — Support for running a local LLM (e.g. Ollama with Mistral/LLaMA) instead of the Gemini API, so auto-apply works completely offline and without any quota restrictions.
+- **More Job Portals** — Expanding beyond Naukri to other platforms.
+- **Smarter Resume Matching** — AI-based job-to-resume relevance scoring before applying.
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

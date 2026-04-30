@@ -61,7 +61,7 @@ Respond ONLY with a valid JSON object in the following format, with no markdown 
  */
 async function launchBrowser() {
   return puppeteerExtra.launch({
-    headless: false, // Turned off headless so you can watch it!
+    headless: true, // Set to false if you want to watch the browser apply in real time
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
