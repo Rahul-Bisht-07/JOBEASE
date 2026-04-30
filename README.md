@@ -69,9 +69,19 @@ SMTP_PASS=your-app-password
 SMTP_FROM="JobEase Support <your-email@gmail.com>"
 
 # Integrations
-NAUKRI_ENCRYPTION_KEY=your-32-character-secret-key-here
+NAUKRI_ENCRYPTION_KEY=MyS3cur3Naukr1Key@JobEase#2026!!
 GEMINI_API_KEY=your-google-gemini-api-key
 ```
+
+> **ℹ️ Environment Variable Notes**
+>
+> **`NAUKRI_ENCRYPTION_KEY`** — This is a secret key that you create yourself. It is used to encrypt users' Naukri credentials stored in the database using AES-256 encryption. **It must be at least 32 characters long.** You can make it anything — a random mix of letters, numbers, and symbols works best. The example above is just a sample; replace it with your own unique key.
+> ```
+> # Good example — any 32+ character random string works:
+> NAUKRI_ENCRYPTION_KEY=MyS3cur3Naukr1Key@JobEase#2026!!
+> ```
+>
+> **`GEMINI_API_KEY`** — This is your Google Gemini API key, used for AI-powered resume scoring and job matching features. Get it for free from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 Start the backend server (starts on `http://localhost:3000`):
 
