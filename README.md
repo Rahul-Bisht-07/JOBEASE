@@ -10,7 +10,7 @@ JobEase is an automated job application and tracking system designed to make the
 
 - **User Authentication** — Sign Up, Login, and Forgot Password via JWT + email links
 - **Naukri Integration** — Browse, queue, and auto-apply to jobs on Naukri using session cookies
-- **AI Auto-Apply** — Google Gemini AI answers recruiter chatbot questions automatically during Naukri application
+- **AI Auto-Apply** — A 4-tier intelligent answering system (Profile Match → Cache → Groq Llama 3.3 → Google Gemini) answers recruiter chatbot questions automatically during Naukri application
 - **Resume Scoring** — Analyses uploaded PDF/DOCX resumes and gives an ATS score out of 100
 - **Application Tracker** — Track all applied, queued, and rejected applications
 - **Cross-Platform** — React Native app runs on Android and iOS via Expo
@@ -114,7 +114,10 @@ SMTP_FROM="JobEase Support <your-email@gmail.com>"
 # Naukri AES-256 encryption key (you create this — any 32+ character string)
 NAUKRI_ENCRYPTION_KEY=MyS3cur3Naukr1Key@JobEase#2026!!
 
-# Google Gemini API key (for AI auto-apply chatbot)
+# Groq API Key for Llama 3.3 (Primary AI Provider)
+GROQ_API_KEY=your-groq-api-key
+
+# Google Gemini API key (Fallback & Resume parsing)
 GEMINI_API_KEY=your-google-gemini-api-key
 ```
 
@@ -136,8 +139,9 @@ GEMINI_API_KEY=your-google-gemini-api-key
 > # Example (replace with your own):
 > NAUKRI_ENCRYPTION_KEY=MyS3cur3Naukr1Key@JobEase#2026!!
 > ```
+> **`GROQ_API_KEY`** — Your Groq API key. Used as the primary AI to answer recruiter chatbot questions (Llama 3.3 70B). Fast and has a generous free tier. Get a free key at [Groq Console](https://console.groq.com/keys).
 >
-> **`GEMINI_API_KEY`** — Your Google Gemini API key. Used by the AI to automatically answer recruiter chatbot questions during Naukri applications. The app uses the `gemini-2.5-flash` model. Get a free key at [Google AI Studio](https://aistudio.google.com/app/apikey).
+> **`GEMINI_API_KEY`** — Your Google Gemini API key. Used as a fallback if Groq fails, and also used for Resume parsing. Get a free key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 Start the backend server:
 
@@ -226,7 +230,7 @@ Once both the backend and frontend are running, follow these steps to start auto
 | Backend | Node.js, Express.js |
 | Database | MongoDB, Mongoose |
 | Auth | JWT, bcryptjs |
-| AI | Google Gemini API (`gemini-2.5-flash`) |
+| AI | Groq (Llama 3.3 70B), Google Gemini API (`gemini-2.5-flash`) |
 | Automation | Puppeteer, puppeteer-extra-plugin-stealth |
 | Resume Parsing | pdf-parse, mammoth |
 | Email | Nodemailer, Gmail SMTP |
@@ -257,18 +261,16 @@ A real Chrome/Chromium browser window will now open when you trigger an auto-app
 
 ---
 
-### ⚠️ Gemini API Free Tier Quota
+### 🧠 Intelligent Auto-Apply Logic (4-Tier System)
 
-The auto-apply feature uses the **Google Gemini API** (`gemini-2.5-flash`) to intelligently answer recruiter chatbot questions during applications. The **free tier has a limited request quota** (requests per minute and per day), which means:
+To make job applications blazing fast and completely free to run without hitting API rate limits, JobEase uses a 4-tier intelligent answering system for recruiter chatbot questions:
 
-- If you are applying to many jobs in one batch, you may hit the quota limit.
-- When the quota is exceeded, Gemini calls will fail silently and the chatbot question will be skipped.
-- You will see an error like `[Gemini API Error] 429 Resource exhausted` in the backend logs.
+1. **Tier 0: Direct Profile Match (Instant & Free)**: The system first checks your internal JobEase profile (e.g., current CTC, notice period, specific skills). If it finds a keyword match, it answers instantly without making any API calls.
+2. **Tier 1: Local Cache (Instant & Free)**: Any previously answered questions are stored in a local `.ai_cache.json` file. If a recruiter asks a question you've already answered, it pulls from the cache.
+3. **Tier 2: Groq / Llama 3.3 (Primary API)**: If no match or cache is found, the question is sent to **Groq**, using the `llama-3.3-70b-versatile` model. Groq provides blazing-fast inference and a very generous free tier.
+4. **Tier 3: Google Gemini (Fallback)**: If Groq fails or hits a rate limit, the system falls back to **Google Gemini** (`gemini-2.5-flash`) as a last resort.
 
-**Workarounds:**
-- Apply in smaller batches.
-- Upgrade to a paid Gemini API plan for higher limits.
-- Or wait for upcoming improvements listed below.
+*Note: Since free API tiers have strict quotas, this 4-tier architecture minimizes external API calls, ensuring you can batch-apply to hundreds of jobs without exhausting your limits.*
 
 ---
 
@@ -276,8 +278,7 @@ The auto-apply feature uses the **Google Gemini API** (`gemini-2.5-flash`) to in
 
 This project is actively being developed. Planned improvements include:
 
-- **Gemini Response Caching** — Cache common chatbot question answers to reduce API calls and avoid quota limits.
-- **Locally Running LLM** — Support for running a local LLM (e.g. Ollama with Mistral/LLaMA) instead of the Gemini API, so auto-apply works completely offline and without any quota restrictions.
+- **Locally Running LLM** — Support for running a local LLM (e.g. Ollama with Mistral/LLaMA) instead of external APIs, so auto-apply works completely offline.
 - **More Job Portals** — Expanding beyond Naukri to other platforms.
 - **Smarter Resume Matching** — AI-based job-to-resume relevance scoring before applying.
 
