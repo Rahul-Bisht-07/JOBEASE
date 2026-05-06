@@ -30,4 +30,9 @@ Thumbs.db
 dist/
 build/
 
+# Uploads
+uploads/
+backend/uploads/
 
+# Cache
+.ai_cache.json

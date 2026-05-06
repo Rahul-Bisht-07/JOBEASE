@@ -1,11 +1,11 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, TouchableOpacity, Linking, Image, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../lib/ThemeContext';
-import { spacing, borderRadius, typography } from '../../lib/theme';
-import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getApiUrl } from '../../lib/api';
+import { spacing, typography } from '../../lib/theme';
 
 export default function JobDetailsScreen() {
     const router = useRouter();
@@ -67,7 +67,7 @@ export default function JobDetailsScreen() {
                 });
                 const data = await resp.json();
                 if (data.success && data.isLinked) setNaukriLinked(true);
-            } catch {}
+            } catch { }
         })();
     }, [isNaukriJob]);
 

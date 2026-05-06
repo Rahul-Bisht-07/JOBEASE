@@ -189,6 +189,21 @@ Then:
 
 ---
 
+## How to Use JobEase (First-Time Guide)
+
+Once both the backend and frontend are running, follow these steps to start automating your job applications:
+
+1. **Create an Account**: Open the Expo app, sign up with your email and password, and log in.
+2. **Link Your Naukri Account**: Go to the **Portals** tab, select **Link Naukri**, and securely enter your Naukri username and password. This allows the backend to authenticate and generate a session cookie for job applications.
+3. **Ensure Naukri Profile is Complete**: The Gemini AI uses your Naukri profile details to automatically answer recruiter questions (such as years of experience, current CTC, etc.). Make sure your Naukri profile and resume are fully up to date on their website.
+4. **Upload Your Resume**: Head to the **Profile** tab to upload your latest resume. The ATS checker will score your resume out of 100 and provide improvement feedback.
+5. **Discover Jobs**: Open the **Discover** tab. The app will scrape and display recommended jobs directly tailored to your Naukri profile.
+6. **Queue Jobs**: Swipe right on jobs you are interested in (or tap to view details and add them to the queue). These jobs are saved to your local database.
+7. **Start Auto-Apply**: Go to the **Tracker** tab (which tracks your Queued, Applied, and Rejected jobs). Tap the **Start Applying** button under the Queued section. 
+8. **Let the Automation Work**: The backend will spin up a Puppeteer browser, navigate to Naukri, answer chatbot questions using Gemini AI, and submit your applications. You can track the live progress directly in the app!
+
+---
+
 ## Troubleshooting
 
 | Problem | Fix |

@@ -1,0 +1,260 @@
+# Authentication Flow & Codebase Explanation
+
+Welcome! Since you're new to TypeScript and know a bit of React, this guide will explain everything from the ground up. We'll start with the general concepts, the libraries used, the folder structure, and then break down the specific files.
+
+## 1. What is the `app/(auth)` folder?
+In your project, you are using **Expo Router**, which is a file-based routing system (similar to Next.js for the web). 
+When you wrap a folder name in parentheses, like `(auth)`, it creates a **Route Group**. 
+This means it organizes your files logically but **does not** add "auth" to the URL path. 
+For example, the file `app/(auth)/login.tsx` can be navigated to simply by going to `/login`, not `/auth/login`. It's just a way to keep all your authentication screens neatly grouped together.
+
+---
+
+## 2. Important Libraries Used
+Before diving into the code, here is what each library does:
+- **`react`**: The core library that lets you build UI using components and hooks (`useState`, `useEffect`, `useMemo`).
+- **`react-native`**: Provides the building blocks for mobile apps. Instead of HTML tags like `<div>` or `<p>`, you use `<View>` and `<Text>`.
+- **`expo-router`**: Handles navigating between different screens in your app (e.g., moving from login to signup).
+- **`@expo/vector-icons`**: Provides scalable icons (like `Ionicons`) for your app.
+- **`expo-linear-gradient`**: Allows you to draw beautiful gradient backgrounds.
+- **`expo-splash-screen`**: Controls the initial loading screen of the app. It holds the splash screen visible until your fonts and app are fully ready.
+- **`@react-native-async-storage/async-storage`**: The mobile equivalent of `localStorage`. It securely saves simple data (like a login token) on the user's phone so they stay logged in.
+- **`react-native-safe-area-context`**: Ensures your app's content doesn't overlap with the phone's notch, camera hole, or bottom swipe bar.
+
+---
+
+## 3. TypeScript Crash Course
+TypeScript is just JavaScript with **Types**. It helps catch errors before you even run the code. 
+- In JS: `const [loading, setLoading] = useState(false);`
+- In TS: `const [errors, setErrors] = useState<{ email?: string }>({});` 
+  *(This tells TypeScript: "The `errors` state is an object that might have an `email` property, which must be a string")*
+
+---
+
+## 4. File-by-File Line-by-Line Breakdown
+
+### File 1: `app/_layout.tsx`
+This is the **root layout** of your app. It wraps every other screen. Its main job is to load the custom font and hide the splash screen once everything is ready.
+
+```tsx
+import { TenorSans_400Regular, useFonts } from '@expo-google-fonts/tenor-sans';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
+import { Text as RNText } from 'react-native';
+import { ThemeProvider } from '../lib/ThemeContext';
+```
+**Explanation:** These are imports. You bring in your font, the `Stack` navigator (which handles screens stacking on top of each other), the `SplashScreen` controller, React hooks, the core mobile `Text` component (renamed to `RNText` to avoid confusion), and your custom `ThemeProvider` (which provides dark/light mode colors to the app).
+
+```tsx
+SplashScreen.preventAutoHideAsync();
+```
+**Explanation:** This stops the splash screen from hiding automatically when the app opens. We want to wait until our fonts load.
+
+```tsx
+export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    TenorSans_400Regular,
+  });
+  const [textConfigured, setTextConfigured] = useState(false);
+```
+**Explanation:** You define your main component. `useFonts` tries to load your custom font and returns true when done. `textConfigured` is a state variable to track if we've successfully forced the app to use our custom font everywhere.
+
+```tsx
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+```
+**Explanation:** `useEffect` runs code when specific variables change. When `fontsLoaded` becomes true (or errors out), it tells the splash screen to finally hide.
+
+```tsx
+  useEffect(() => {
+    if (fontsLoaded && !textConfigured) {
+      const textComponent = RNText as typeof RNText & { defaultProps?: any };
+      textComponent.defaultProps = textComponent.defaultProps || {};
+      const existingStyle = textComponent.defaultProps.style;
+      const mergedStyle = Array.isArray(existingStyle)
+        ? [...existingStyle, { fontFamily: 'TenorSans_400Regular' }]
+        : [existingStyle, { fontFamily: 'TenorSans_400Regular' }].filter(Boolean);
+      textComponent.defaultProps.style =
+        mergedStyle.length > 0 ? mergedStyle : { fontFamily: 'TenorSans_400Regular' };
+      setTextConfigured(true);
+    }
+  }, [fontsLoaded, textConfigured]);
+```
+**Explanation:** This block is a clever "hack" to set the default font for the *entire* app. It modifies the underlying React Native `Text` component to inject `{ fontFamily: 'TenorSans_400Regular' }` into its default styles.
+
+```tsx
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+```
+**Explanation:** If fonts are still loading, render nothing. (The splash screen is still visible).
+
+```tsx
+  return (
+    <ThemeProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </ThemeProvider>
+  );
+}
+```
+**Explanation:** Finally, render the app. `ThemeProvider` wraps the app to provide colors. `Stack` handles rendering the current page, and `headerShown: false` hides the default ugly top navigation bar.
+
+---
+
+### File 2: `app/(auth)/welcome.tsx`
+This is the very first screen users see. It's mostly UI and buttons.
+
+```tsx
+const { width, height } = Dimensions.get('window');
+```
+**Explanation:** Gets the physical width and height of the phone screen so we can size decorative elements perfectly.
+
+```tsx
+export default function WelcomeScreen() {
+  const router = useRouter();
+  const { colors, isDark } = useTheme();
+```
+**Explanation:** We get the `router` to navigate to other screens, and we grab `colors` and `isDark` (boolean) from our ThemeProvider to know if we are in dark mode.
+
+```tsx
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient ... style={styles.gradient}>
+```
+**Explanation:** `SafeAreaView` ensures UI doesn't hit the phone's top notch. `StatusBar` turns the clock/battery icons white (`light-content`). `LinearGradient` draws a smooth gradient background depending on light/dark mode.
+
+```tsx
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+```
+**Explanation:** These are just empty transparent views styled to look like circles in the background.
+
+```tsx
+            <TouchableOpacity onPress={() => router.push('/(auth)/signup')} ... >
+              <Text>Get Started</Text>
+            </TouchableOpacity>
+```
+**Explanation:** `TouchableOpacity` is a button that fades slightly when pressed. When tapped, it tells the router to go to the signup page. The rest of the file is just the `StyleSheet` defining colors, sizes, and layout.
+
+---
+
+### File 3: `app/(auth)/signup.tsx`
+This screen lets users create an account.
+
+```tsx
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string; }>({});
+```
+**Explanation:** `formData` holds what the user types. `errors` holds validation messages (like "Password too short"). The `<{...}>` is TypeScript defining exactly what the errors object is allowed to look like.
+
+```tsx
+  const validateForm = () => { ... }
+```
+**Explanation:** A function that checks if `formData.name` exists, if `email` has an `@` sign, and if the passwords match. It populates `errors` if things are wrong.
+
+```tsx
+  const handleSignup = async () => {
+    if (!validateForm()) return;
+    setLoading(true);
+```
+**Explanation:** When they press Sign Up, we first validate. If it fails, we stop (`return`). If it passes, we set `loading` to true so we can show a spinning loader on the button.
+
+```tsx
+    try {
+      const response = await fetch(
+        getApiUrl('/api/auth/signup'),
+        withJson({ method: 'POST', body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password }) }),
+      );
+      const data = await response.json();
+```
+**Explanation:** This talks to your backend. It makes a `POST` request to your API, sending the name, email, and password as JSON. It then waits for the response.
+
+```tsx
+      if (response.ok && data.success) {
+        await AsyncStorage.setItem('authToken', data.token);
+        Alert.alert('Success', 'Account created successfully!', [
+          { text: 'OK', onPress: () => router.replace('/(auth)/login') },
+        ]);
+```
+**Explanation:** If the server says success, we save the secret `token` into the phone's `AsyncStorage`. Then we show a popup (Alert). When they click OK on the popup, we `router.replace` them to the login screen. (`replace` means they can't swipe back to the signup screen).
+
+```tsx
+  <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <ScrollView ... >
+```
+**Explanation:** In mobile, when the keyboard pops up, it covers the screen! `KeyboardAvoidingView` pushes the screen up so you can still see what you are typing. `ScrollView` allows the user to scroll if the screen is too small.
+
+```tsx
+  <TextInput style={styles.input} value={formData.name} onChangeText={(text) => updateField('name', text)} />
+```
+**Explanation:** This is the input box. When the user types, it calls `updateField` to save the new text into our state.
+
+---
+
+### File 4: `app/(auth)/login.tsx`
+Very similar to `signup.tsx`, but specifically for logging in.
+
+```tsx
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+```
+**Explanation:** Tracks email, password, and whether the password should be visible (toggled by the eye icon).
+
+```tsx
+  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+    <Ionicons name={showPassword ? 'eye-outline' : 'eye-off-outline'} />
+  </TouchableOpacity>
+```
+**Explanation:** When clicked, it flips `showPassword` from true to false, changing the icon and the `secureTextEntry` prop on the TextInput.
+
+```tsx
+        await AsyncStorage.setItem('authToken', data.token);
+        router.replace('/(tabs)');
+```
+**Explanation:** After a successful login, we save the token and send the user to `/(tabs)`, which is the main dashboard of the app!
+
+---
+
+### File 5: `app/(auth)/forgot-password.tsx`
+This handles password resets via OTP (One Time Password).
+
+```tsx
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+```
+**Explanation:** `otpSent` tracks whether we have successfully asked the server to send an email. If true, we reveal the OTP input box.
+
+```tsx
+  const handleSendOtp = async () => { ... }
+```
+**Explanation:** Sends the user's email to `/api/auth/forgot-password-otp`. If successful, we flip `otpSent` to true.
+
+```tsx
+  const handleVerifyOtp = async () => { ... }
+```
+**Explanation:** Sends the email and the 6-digit code to `/api/auth/verify-reset-otp`. If the server approves, we navigate the user to the reset password screen: `router.replace({ pathname: '/reset-password', params: { email, otp } });`. Notice we pass the `email` and `otp` as parameters to the next screen so the next screen knows who is resetting their password!
+
+```tsx
+  {otpSent && (
+    <View style={styles.inputContainer}>
+      <Text style={styles.label}>Enter OTP</Text>
+      <TextInput ... />
+    </View>
+  )}
+```
+**Explanation:** This is a React pattern called "Conditional Rendering". If `otpSent` is true, it renders the OTP input box. If false, it renders nothing.
+
+---
+
+### Summary
+Every file here follows a similar pattern:
+1. **Define State**: Use `useState` to track what the user types and what state the screen is in (loading, errors, etc).
+2. **Define Functions**: Write `async` functions to talk to your backend API using `fetch`.
+3. **Render UI**: Return a mix of `<View>`, `<Text>`, and `<TextInput>` wrapped in a `<SafeAreaView>` and `<KeyboardAvoidingView>` so it looks good on mobile devices.
+4. **Style**: Use `StyleSheet.create` combined with `useMemo` (to prevent recalculating styles unless theme colors change) to make everything look beautiful using Flexbox!

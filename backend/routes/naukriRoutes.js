@@ -127,19 +127,10 @@ router.post('/queue', protect, async (req, res) => {
     return res.status(400).json({ success: false, message: 'jobs array is required' });
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const appliedToday = await Application.countDocuments({
-    userId: req.user._id,
-    createdAt: { $gte: today },
-    status: 'applied',
-  });
-  const limit = req.user.naukriPortal?.dailyApplyLimit ?? 20;
-  const remaining = Math.max(0, limit - appliedToday);
-  const toQueue = jobs.slice(0, remaining);
+  const toQueue = jobs;
 
   if (toQueue.length === 0) {
-    return res.status(429).json({ success: false, message: `Daily apply limit of ${limit} reached. Try again tomorrow.` });
+    return res.status(400).json({ success: false, message: 'No jobs provided to queue.' });
   }
 
   try {

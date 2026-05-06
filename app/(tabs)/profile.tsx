@@ -3,14 +3,14 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -503,87 +503,87 @@ export default function ProfileScreen() {
         <View style={[styles.card, { borderColor: colors.primary, borderWidth: 2 }]}>
           <Text style={[styles.sectionTitle, { color: colors.primary, fontWeight: '700' }]}>🤖 Auto-Apply AI Profile</Text>
           <Text style={styles.caption}>Fill this out once. Our Gemini AI will use these details to automatically answer recruiter chatbot questions when applying.</Text>
-          
+
           <Text style={[styles.bodyText, { marginTop: 10, fontWeight: '700', color: colors.primary }]}>Experience & Skills</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Total experience (e.g., 5 years)</Text>
           <TextInput style={styles.input} placeholder="e.g., 5" placeholderTextColor={colors.textMuted} value={botProfile.totalExperience || ''} onChangeText={v => handleBotInput('totalExperience', v)} />
-          
-          <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Key skills & proficiency (e.g., React 8/10, Node 9/10)</Text>
-          <TextInput style={styles.input} placeholder="Enter skills" placeholderTextColor={colors.textMuted} value={botProfile.skillsProficiency || ''} onChangeText={v => handleBotInput('skillsProficiency', v)} />
-          
+
+          <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Skills & experience (e.g., React (1 yr), Python (2 yrs), Node (1 yr))</Text>
+          <TextInput style={styles.input} placeholder="e.g., React (1 yr), Python (2 yrs)" placeholderTextColor={colors.textMuted} value={botProfile.skillsProficiency || ''} onChangeText={v => handleBotInput('skillsProficiency', v)} />
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Languages you are proficient in</Text>
           <TextInput style={styles.input} placeholder="e.g., English, Hindi" placeholderTextColor={colors.textMuted} value={botProfile.languages || ''} onChangeText={v => handleBotInput('languages', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Specific domain experience (e.g., Fintech, Healthcare)</Text>
           <TextInput style={styles.input} placeholder="Enter domains" placeholderTextColor={colors.textMuted} value={botProfile.workedOnDomain || ''} onChangeText={v => handleBotInput('workedOnDomain', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>CTC & Salary</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Current CTC (LPA)</Text>
           <TextInput style={styles.input} placeholder="e.g., 8" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={botProfile.currentCTC || ''} onChangeText={v => handleBotInput('currentCTC', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Expected CTC (LPA)</Text>
           <TextInput style={styles.input} placeholder="e.g., 12" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={botProfile.expectedCTC || ''} onChangeText={v => handleBotInput('expectedCTC', v)} />
-          
+
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Notice Period & Availability</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Current notice period</Text>
           <TextInput style={styles.input} placeholder="e.g., 30 days" placeholderTextColor={colors.textMuted} value={botProfile.noticePeriod || ''} onChangeText={v => handleBotInput('noticePeriod', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>How soon can you join?</Text>
           <TextInput style={styles.input} placeholder="e.g., Immediately" placeholderTextColor={colors.textMuted} value={botProfile.joinInDays || ''} onChangeText={v => handleBotInput('joinInDays', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Location & Work Mode</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Current Location</Text>
           <TextInput style={styles.input} placeholder="e.g., Bangalore" placeholderTextColor={colors.textMuted} value={botProfile.currentLocation || ''} onChangeText={v => handleBotInput('currentLocation', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Willing to relocate to? (Cities or 'Yes/No')</Text>
           <TextInput style={styles.input} placeholder="e.g., Yes" placeholderTextColor={colors.textMuted} value={botProfile.willingToRelocate || ''} onChangeText={v => handleBotInput('willingToRelocate', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Preferred work mode</Text>
           <TextInput style={styles.input} placeholder="e.g., Hybrid, WFH, WFO" placeholderTextColor={colors.textMuted} value={botProfile.workModePreferences || ''} onChangeText={v => handleBotInput('workModePreferences', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Education</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Highest qualification</Text>
           <TextInput style={styles.input} placeholder="e.g., B.Tech in CS" placeholderTextColor={colors.textMuted} value={botProfile.highestQualification || ''} onChangeText={v => handleBotInput('highestQualification', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Graduation year</Text>
           <TextInput style={styles.input} placeholder="e.g., 2023" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={botProfile.graduationYear || ''} onChangeText={v => handleBotInput('graduationYear', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>CGPA or Percentage</Text>
           <TextInput style={styles.input} placeholder="e.g., 8.5" placeholderTextColor={colors.textMuted} keyboardType="numeric" value={botProfile.cgpaPercentage || ''} onChangeText={v => handleBotInput('cgpaPercentage', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Are you a fresher or experienced?</Text>
           <TextInput style={styles.input} placeholder="e.g., Fresher" placeholderTextColor={colors.textMuted} value={botProfile.fresherOrExperienced || ''} onChangeText={v => handleBotInput('fresherOrExperienced', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Profile / Intro</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Profile Headline (> 50 chars)</Text>
           <TextInput style={styles.input} placeholder="Enter your headline" placeholderTextColor={colors.textMuted} value={botProfile.profileHeadline || ''} onChangeText={v => handleBotInput('profileHeadline', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Short summary about yourself</Text>
           <TextInput style={[styles.input, styles.multiline]} placeholder="Write a brief summary" placeholderTextColor={colors.textMuted} multiline value={botProfile.summary || ''} onChangeText={v => handleBotInput('summary', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Eligibility & Specifics (Yes/No)</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Comfortable with night/rotational shifts?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.shiftsOk || ''} onChangeText={v => handleBotInput('shiftsOk', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Okay with bond/service agreement?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.bondOk || ''} onChangeText={v => handleBotInput('bondOk', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Do you have a laptop/PC and internet?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.hasLaptop || ''} onChangeText={v => handleBotInput('hasLaptop', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Do you have a two-wheeler?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.hasVehicle || ''} onChangeText={v => handleBotInput('hasVehicle', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Comfortable with field work/travel?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.fieldWorkOk || ''} onChangeText={v => handleBotInput('fieldWorkOk', v)} />
 
           <Text style={[styles.bodyText, { marginTop: 16, fontWeight: '700', color: colors.primary }]}>Role-specific</Text>
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Experience in Sales/Marketing/Support?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.salesSupportExp || ''} onChangeText={v => handleBotInput('salesSupportExp', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Comfortable with target-based roles?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.targetBasedOk || ''} onChangeText={v => handleBotInput('targetBasedOk', v)} />
-          
+
           <Text style={{ fontSize: 13, color: colors.text, marginBottom: 4, marginTop: 8 }}>Experience with US/UK/International clients?</Text>
           <TextInput style={styles.input} placeholder="Yes / No" placeholderTextColor={colors.textMuted} value={botProfile.intlClientExp || ''} onChangeText={v => handleBotInput('intlClientExp', v)} />
 
@@ -593,8 +593,8 @@ export default function ProfileScreen() {
           <Text style={styles.primaryButtonText}>{saving ? 'Saving…' : 'Save Profile'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.primaryButton, { backgroundColor: colors.error || '#EF4444', marginTop: 10 }]} 
+        <TouchableOpacity
+          style={[styles.primaryButton, { backgroundColor: colors.error || '#EF4444', marginTop: 10 }]}
           onPress={handleLogout}
         >
           <Text style={styles.primaryButtonText}>Log Out</Text>
